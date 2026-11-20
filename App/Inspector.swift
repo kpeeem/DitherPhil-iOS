@@ -314,7 +314,7 @@ struct ExportSheet: View {
 
 struct StudioSlider: View {
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
-    @ScaledMetric(relativeTo: .subheadline) private var labelWidth = 104.0
+    @ScaledMetric(relativeTo: .subheadline) private var labelWidth = 120.0
     @ScaledMetric(relativeTo: .caption) private var valueWidth = 70.0
     let title: LocalizedStringResource
     @Binding var value: Double
@@ -335,7 +335,10 @@ struct StudioSlider: View {
         ViewThatFits(in: .horizontal) {
             if !dynamicTypeSize.isAccessibilitySize {
                 HStack(spacing: StudioStyle.gap) {
-                    label.frame(width: labelWidth, alignment: .leading)
+                    label
+                        .lineLimit(1)
+                        .minimumScaleFactor(0.9)
+                        .frame(width: labelWidth, alignment: .leading)
                     slider.frame(minWidth: 72, maxWidth: .infinity)
                     readout.frame(width: valueWidth, alignment: .trailing)
                 }
