@@ -1,0 +1,70 @@
+name: DitherPhil
+options:
+  deploymentTarget:
+    iOS: "26.0"
+settings:
+  base:
+    SWIFT_VERSION: "6.0"
+    MARKETING_VERSION: "1.0.0"
+    CURRENT_PROJECT_VERSION: "1"
+targets:
+  DitherPhil:
+    type: application
+    platform: iOS
+    sources:
+      - path: App
+        excludes:
+          - Dither.ci.metal
+      - path: App/Dither.ci.metal
+        buildPhase: none
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: app.kpem.ditherphil.ios
+        TARGETED_DEVICE_FAMILY: "1,2"
+        GENERATE_INFOPLIST_FILE: YES
+        INFOPLIST_KEY_CFBundleDisplayName: DitherPhil
+        INFOPLIST_KEY_UILaunchScreen_Generation: YES
+        INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents: YES
+        INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone: "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight"
+        INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad: "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight"
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+        ENABLE_USER_SCRIPT_SANDBOXING: NO
+    postBuildScripts:
+      - name: Build Core Image Metal library
+        inputFiles:
+          - $(SRCROOT)/App/Dither.ci.metal
+        outputFiles:
+          - $(TARGET_BUILD_DIR)/$(UNLOCALIZED_RESOURCES_FOLDER_PATH)/Dither.metallib
+        script: |
+          set -eu
+          cd "$SRCROOT"
+          mkdir -p "$(dirname "$SCRIPT_OUTPUT_FILE_0")"
+          xcrun --sdk "$PLATFORM_NAME" metal -fcikernel -ffile-prefix-map="$SRCROOT"=. -c App/Dither.ci.metal -o "$TARGET_TEMP_DIR/Dither.air"
+          xcrun --sdk "$PLATFORM_NAME" metallib -cikernel "$TARGET_TEMP_DIR/Dither.air" -o "$SCRIPT_OUTPUT_FILE_0"
+  DitherPhilTests:
+    type: bundle.unit-test
+    platform: iOS
+    sources: [Tests]
+    dependencies:
+      - target: DitherPhil
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: app.kpem.ditherphil.tests
+        GENERATE_INFOPLIST_FILE: YES
+  DitherPhilUITests:
+    type: bundle.ui-testing
+    platform: iOS
+    sources: [UITests]
+    dependencies:
+      - target: DitherPhil
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: app.kpem.ditherphil.uitests
+        GENERATE_INFOPLIST_FILE: YES
+schemes:
+  DitherPhil:
+    build:
+      targets:
+        DitherPhil: all
+    test:
+      targets: [DitherPhilTests, DitherPhilUITests]
