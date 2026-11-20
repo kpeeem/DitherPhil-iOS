@@ -265,7 +265,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "set -eu\ncd \"$SRCROOT\"\nmkdir -p \"$(dirname \"$SCRIPT_OUTPUT_FILE_0\")\"\nxcrun --sdk \"$PLATFORM_NAME\" metal -fcikernel -ffile-prefix-map=\"$SRCROOT\"=. -c App/Dither.ci.metal -o \"$TARGET_TEMP_DIR/Dither.air\"\nxcrun --sdk \"$PLATFORM_NAME\" metallib -cikernel \"$TARGET_TEMP_DIR/Dither.air\" -o \"$SCRIPT_OUTPUT_FILE_0\"\n";
+			shellScript = "set -eu\ncd \"$SRCROOT\"\nmkdir -p \"$(dirname \"$SCRIPT_OUTPUT_FILE_0\")\"\nxcrun --sdk \"$PLATFORM_NAME\" metal -fcikernel -x metal -c - -o \"$TARGET_TEMP_DIR/Dither.air\" < App/Dither.ci.metal\nxcrun --sdk \"$PLATFORM_NAME\" metallib -cikernel \"$TARGET_TEMP_DIR/Dither.air\" -o \"$SCRIPT_OUTPUT_FILE_0\"\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 

@@ -39,7 +39,7 @@ targets:
           set -eu
           cd "$SRCROOT"
           mkdir -p "$(dirname "$SCRIPT_OUTPUT_FILE_0")"
-          xcrun --sdk "$PLATFORM_NAME" metal -fcikernel -ffile-prefix-map="$SRCROOT"=. -c App/Dither.ci.metal -o "$TARGET_TEMP_DIR/Dither.air"
+          xcrun --sdk "$PLATFORM_NAME" metal -fcikernel -x metal -c - -o "$TARGET_TEMP_DIR/Dither.air" < App/Dither.ci.metal
           xcrun --sdk "$PLATFORM_NAME" metallib -cikernel "$TARGET_TEMP_DIR/Dither.air" -o "$SCRIPT_OUTPUT_FILE_0"
   DitherPhilTests:
     type: bundle.unit-test
