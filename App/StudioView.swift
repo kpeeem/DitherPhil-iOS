@@ -24,7 +24,8 @@ struct StudioView: View {
                     Rectangle().fill(StudioStyle.stroke).frame(height: StudioStyle.rule)
                     if let media = editor.media {
                         workspace(media, size: geometry.size)
-                            .padding(StudioStyle.margin)
+                            .padding(.horizontal, StudioStyle.margin)
+                            .padding(.vertical, StudioStyle.gap)
                     } else {
                         ContentUnavailableView("Choose a photo or video", systemImage: "photo.on.rectangle")
                     }
@@ -97,7 +98,7 @@ struct StudioView: View {
     }
 
     private func workspace(_ media: StudioMedia, size: CGSize) -> some View {
-        let availableHeight = size.height - 2 * StudioStyle.margin - StudioStyle.rule
+        let availableHeight = size.height - 2 * StudioStyle.gap - StudioStyle.rule
         let wide = size.width >= 720 || (size.width > size.height && size.width >= 580)
         let inspector = Inspector(editor: editor, section: $section)
             .background(StudioStyle.stone, in: .rect(cornerRadius: StudioStyle.radius))
@@ -184,10 +185,12 @@ struct StudioView: View {
                             .font(StudioStyle.font(14, relativeTo: .subheadline))
                     }
                 }
-                .padding(.horizontal, dynamicTypeSize.isAccessibilitySize ? 0 : 4)
+                .padding(.horizontal, dynamicTypeSize.isAccessibilitySize ? 0 : 14)
                 .frame(minWidth: 44, minHeight: 44)
+                .background(StudioStyle.stone, in: .capsule)
+                .contentShape(.capsule)
             }
-            .buttonStyle(.glass)
+            .buttonStyle(.plain)
             .accessibilityLabel("Compare with original")
             .accessibilityValue(editor.showsOriginal ? Text("Original") : Text("Preview"))
             .accessibilityIdentifier("compare")
@@ -206,11 +209,13 @@ struct StudioView: View {
             .accessibilityLabel(editor.playing ? "Pause" : "Play")
             .accessibilityIdentifier("playback")
 
-            Slider(value: Binding(get: { scrubbing ? position : min(editor.time, media.duration) },
-                                  set: { position = $0; if !scrubbing { editor.seek($0) } }),
-                   in: 0...media.duration) {
-                Text("Playback position")
-            } onEditingChanged: { editing in
+            StudioRange(
+                value: Binding(get: { scrubbing ? position : min(editor.time, media.duration) },
+                               set: { position = $0; if !scrubbing { editor.seek($0) } }),
+                range: 0...media.duration,
+                title: "Playback position",
+                display: playbackTime
+            ) { editing in
                 if editing {
                     position = editor.time
                     resumeAfterScrub = editor.playing
@@ -221,14 +226,17 @@ struct StudioView: View {
                 }
                 scrubbing = editing
             }
-            .frame(minHeight: 44)
             if !dynamicTypeSize.isAccessibilitySize {
-                Text(Duration.seconds(scrubbing ? position : editor.time).formatted(.time(pattern: .minuteSecond)))
+                Text(playbackTime(scrubbing ? position : editor.time))
                     .font(.caption.monospacedDigit())
                     .foregroundStyle(StudioStyle.mute)
                     .accessibilityHidden(true)
             }
         }
+    }
+
+    private func playbackTime(_ seconds: Double) -> String {
+        Duration.seconds(seconds).formatted(.time(pattern: .minuteSecond))
     }
 }
 

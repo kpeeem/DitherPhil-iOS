@@ -26,6 +26,11 @@ final class StudioTests: XCTestCase {
         exposure.adjust(toNormalizedSliderPosition: 0.67)
         XCTAssertEqual(compare.value as? String, "Preview")
         app.buttons["Dither"].tap()
+        let cellSize = app.sliders["Cell size"]
+        XCTAssertGreaterThanOrEqual(cellSize.frame.height, 44)
+        XCTAssertEqual(cellSize.value as? String, "4 px")
+        cellSize.adjust(toNormalizedSliderPosition: 0.65)
+        XCTAssertNotEqual(cellSize.value as? String, "4 px")
         let algorithm = app.buttons["algorithm"]
         XCTAssertGreaterThanOrEqual(algorithm.frame.height, 44)
         XCTAssertGreaterThanOrEqual(compare.frame.height, 44)

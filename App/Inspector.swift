@@ -32,6 +32,7 @@ struct Inspector: View {
                     }
                 }
                 .padding(StudioStyle.gap)
+                .frame(maxWidth: .infinity, alignment: .leading)
             }
             .defaultScrollAnchor(.top)
             .id(section)
@@ -313,14 +314,15 @@ struct ExportSheet: View {
 
 struct StudioSlider: View {
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
-    @ScaledMetric(relativeTo: .subheadline) private var labelWidth = 112.0
-    let title: LocalizedStringKey
+    @ScaledMetric(relativeTo: .subheadline) private var labelWidth = 104.0
+    @ScaledMetric(relativeTo: .caption) private var valueWidth = 70.0
+    let title: LocalizedStringResource
     @Binding var value: Double
     let range: ClosedRange<Double>
     let step: Double
     let display: (Double) -> String
 
-    init(_ title: LocalizedStringKey, value: Binding<Double>, in range: ClosedRange<Double>, step: Double,
+    init(_ title: LocalizedStringResource, value: Binding<Double>, in range: ClosedRange<Double>, step: Double,
          display: @escaping (Double) -> String) {
         self.title = title
         _value = value
@@ -330,24 +332,49 @@ struct StudioSlider: View {
     }
 
     var body: some View {
-        let layout = dynamicTypeSize.isAccessibilitySize
-            ? AnyLayout(VStackLayout(alignment: .leading, spacing: 0))
-            : AnyLayout(HStackLayout(alignment: .center, spacing: StudioStyle.gap))
-        layout {
-            VStack(alignment: .leading, spacing: 1) {
-                Text(title).font(StudioStyle.font(14, relativeTo: .subheadline))
-                Text(display(value))
-                    .font(StudioStyle.font(12, relativeTo: .caption))
-                    .monospacedDigit()
-                    .foregroundStyle(StudioStyle.mute)
+        ViewThatFits(in: .horizontal) {
+            if !dynamicTypeSize.isAccessibilitySize {
+                HStack(spacing: StudioStyle.gap) {
+                    label.frame(width: labelWidth, alignment: .leading)
+                    slider.frame(minWidth: 72, maxWidth: .infinity)
+                    readout.frame(width: valueWidth, alignment: .trailing)
+                }
+                .frame(maxWidth: .infinity)
             }
-            .frame(width: dynamicTypeSize.isAccessibilitySize ? nil : labelWidth, alignment: .leading)
-            .accessibilityHidden(true)
-            Slider(value: $value, in: range, step: step) { Text(title) }
-                .frame(minHeight: 44)
-                .accessibilityValue(display(value))
+            VStack(alignment: .leading, spacing: 0) {
+                ViewThatFits(in: .horizontal) {
+                    HStack(alignment: .firstTextBaseline, spacing: StudioStyle.gap) {
+                        label.fixedSize()
+                        Spacer(minLength: 0)
+                        readout.fixedSize()
+                    }
+                    VStack(alignment: .leading, spacing: 2) {
+                        label
+                        readout
+                    }
+                }
+                slider
+            }
+            .padding(.vertical, 6)
         }
-        .padding(.vertical, dynamicTypeSize.isAccessibilitySize ? 6 : 2)
+    }
+
+    private var label: some View {
+        Text(title)
+            .font(StudioStyle.font(14, relativeTo: .subheadline))
+            .accessibilityHidden(true)
+    }
+
+    private var readout: some View {
+        Text(display(value))
+            .font(StudioStyle.font(12, relativeTo: .caption))
+            .monospacedDigit()
+            .foregroundStyle(StudioStyle.mute)
+            .accessibilityHidden(true)
+    }
+
+    private var slider: some View {
+        StudioRange(value: $value, range: range, step: step, title: title, display: display)
     }
 }
 
