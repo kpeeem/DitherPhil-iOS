@@ -29,7 +29,7 @@ struct StudioView: View {
                         stage(media)
                             .padding(.horizontal, StudioStyle.margin)
                             .padding(.top, StudioStyle.gap)
-                            .padding(.bottom, panelHeight - 8)
+                            .padding(.bottom, panelHeight + 10)
                     } else {
                         ContentUnavailableView("Choose a photo or video", systemImage: "photo.on.rectangle")
                     }

@@ -64,21 +64,19 @@ struct Inspector: View {
                 ? AnyLayout(VStackLayout(alignment: .leading, spacing: 2))
                 : AnyLayout(HStackLayout(alignment: .top, spacing: StudioStyle.gap))
             layout {
-                option("Algorithm") {
+                option("Algorithm", value: editor.settings.algorithm.name, identifier: "algorithm") {
                     Picker("Algorithm", selection: $editor.settings.algorithm) {
                         ForEach(Algorithm.allCases) { algorithm in
                             Text(algorithm.name).tag(algorithm)
                         }
                     }
-                    .accessibilityIdentifier("algorithm")
                 }
-                option("Palette") {
+                option("Palette", value: editor.settings.palette.name, identifier: "palette") {
                     Picker("Palette", selection: $editor.settings.palette) {
                         ForEach(Palette.allCases) { palette in
                             Text(palette.name).tag(palette)
                         }
                     }
-                    .accessibilityIdentifier("palette")
                 }
             }
 
@@ -105,13 +103,34 @@ struct Inspector: View {
         }
     }
 
-    private func option<Content: View>(_ label: LocalizedStringKey, @ViewBuilder content: () -> Content) -> some View {
+    private func option<Content: View>(
+        _ label: LocalizedStringKey,
+        value: LocalizedStringKey,
+        identifier: String,
+        @ViewBuilder content: () -> Content
+    ) -> some View {
         VStack(alignment: .leading, spacing: 0) {
             Text(label)
                 .font(.subheadline)
                 .foregroundStyle(StudioStyle.mute)
                 .accessibilityHidden(true)
-            content().studioPicker()
+            Menu {
+                content().pickerStyle(.inline)
+            } label: {
+                HStack(alignment: .firstTextBaseline, spacing: 6) {
+                    Text(value)
+                        .fixedSize(horizontal: false, vertical: true)
+                    Image(systemName: "chevron.up.chevron.down")
+                        .imageScale(.small)
+                        .accessibilityHidden(true)
+                }
+                .padding(.vertical, 6)
+                .frame(maxWidth: .infinity, minHeight: 44, alignment: .leading)
+                .contentShape(Rectangle())
+            }
+            .accessibilityLabel(Text(label))
+            .accessibilityValue(Text(value))
+            .accessibilityIdentifier(identifier)
         }
     }
 
