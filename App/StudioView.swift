@@ -4,7 +4,6 @@ import SwiftUI
 import UniformTypeIdentifiers
 
 struct StudioView: View {
-    @Environment(\.accessibilityReduceTransparency) private var reduceTransparency
     @Environment(\.scenePhase) private var scenePhase
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
     @State private var editor = Editor()
@@ -21,44 +20,21 @@ struct StudioView: View {
     var body: some View {
         NavigationStack {
             GeometryReader { geometry in
-                let height = geometry.size.height
-                let panelHeight = min(height * (dynamicTypeSize.isAccessibilitySize ? 0.59 : 0.45), 354)
                 VStack(spacing: 0) {
                     Rectangle().fill(StudioStyle.stroke).frame(height: StudioStyle.rule)
                     if let media = editor.media {
-                        stage(media)
-                            .padding(.horizontal, StudioStyle.margin)
-                            .padding(.top, StudioStyle.gap)
-                            .padding(.bottom, panelHeight + 10)
+                        workspace(media, size: geometry.size)
+                            .padding(StudioStyle.margin)
                     } else {
                         ContentUnavailableView("Choose a photo or video", systemImage: "photo.on.rectangle")
                     }
                 }
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
-                .overlay(alignment: .bottom) {
-                    if editor.media != nil {
-                        Inspector(editor: editor, section: $section)
-                            .frame(maxWidth: 620)
-                            .frame(height: max(148, panelHeight))
-                            .background {
-                                if reduceTransparency { StudioStyle.stone }
-                                else { Rectangle().fill(.regularMaterial).background(StudioStyle.stone.opacity(0.78)) }
-                            }
-                            .clipShape(.rect(cornerRadius: StudioStyle.radius))
-                            .overlay {
-                                RoundedRectangle(cornerRadius: StudioStyle.radius)
-                                    .strokeBorder(StudioStyle.ink.opacity(0.14))
-                                    .allowsHitTesting(false)
-                            }
-                            .padding(.horizontal, StudioStyle.margin)
-                            .padding(.bottom, 8)
-                    }
-                }
                 .overlay {
                     if editor.loading {
                         ProgressView("Opening media…")
                             .padding(20)
-                            .background(.regularMaterial, in: .rect(cornerRadius: StudioStyle.radius))
+                            .background(StudioStyle.stone, in: .rect(cornerRadius: StudioStyle.radius))
                     }
                 }
             }
@@ -67,12 +43,12 @@ struct StudioView: View {
             .toolbar {
                 ToolbarItem(placement: .principal) {
                     Text(verbatim: "DitherPhil")
-                        .font(StudioStyle.title(22, relativeTo: .title2))
+                        .font(StudioStyle.font(22, relativeTo: .title2))
                         .foregroundStyle(StudioStyle.ink)
                         .accessibilityAddTraits(.isHeader)
                 }
                 ToolbarItem(placement: .topBarLeading) {
-                    Button("Import", systemImage: "plus") { showsImport = true }
+                    Button("Import", systemImage: "photo.badge.plus") { showsImport = true }
                         .accessibilityIdentifier("import")
                 }
                 ToolbarItem(placement: .topBarTrailing) {
@@ -88,6 +64,7 @@ struct StudioView: View {
         .onChange(of: scenePhase) { _, phase in
             if phase != .active { editor.player.pause() }
         }
+        .onChange(of: editor.settings) { _, _ in editor.showsOriginal = false }
         .confirmationDialog("Open media", isPresented: $showsImport, titleVisibility: .visible) {
             Button("Photo Library") { showsPhotos = true }
             Button("Files") { showsFiles = true }
@@ -106,7 +83,7 @@ struct StudioView: View {
         }
         .sheet(isPresented: $showsExport, onDismiss: { editor.exported = nil }) {
             ExportSheet(editor: editor)
-                .presentationDetents([.medium, .large])
+                .presentationDetents(dynamicTypeSize.isAccessibilitySize ? [.large] : [.fraction(0.54), .large])
                 .interactiveDismissDisabled(editor.exporting)
         }
         .alert("DitherPhil", isPresented: Binding(
@@ -119,23 +96,35 @@ struct StudioView: View {
         }
     }
 
+    private func workspace(_ media: StudioMedia, size: CGSize) -> some View {
+        let availableHeight = size.height - 2 * StudioStyle.margin - StudioStyle.rule
+        let wide = size.width >= 720 || (size.width > size.height && size.width >= 580)
+        let inspector = Inspector(editor: editor, section: $section)
+            .background(StudioStyle.stone, in: .rect(cornerRadius: StudioStyle.radius))
+            .clipShape(.rect(cornerRadius: StudioStyle.radius))
+
+        return Group {
+            if wide {
+                let paneWidth = min(420, (size.width - 2 * StudioStyle.margin) * 0.44)
+                HStack(alignment: .top, spacing: StudioStyle.margin) {
+                    stage(media)
+                    inspector.frame(width: paneWidth)
+                }
+            } else {
+                let panelHeight = dynamicTypeSize.isAccessibilitySize
+                    ? min(355, availableHeight * 0.54)
+                    : min(264, availableHeight * 0.45)
+                stage(media)
+                    .padding(.bottom, panelHeight + StudioStyle.gap)
+                    .overlay(alignment: .bottom) {
+                        inspector.frame(height: panelHeight)
+                    }
+            }
+        }
+    }
+
     private func stage(_ media: StudioMedia) -> some View {
         VStack(alignment: .leading, spacing: StudioStyle.gap) {
-            HStack {
-                Text(editor.showsOriginal ? "Original" : "Preview")
-                    .font(StudioStyle.title(15, relativeTo: .subheadline))
-                    .textCase(.uppercase)
-                    .accessibilityAddTraits(.isHeader)
-                Spacer()
-                if !dynamicTypeSize.isAccessibilitySize {
-                    Text(dimensions(editor.settings.resolution.size(for: media.size, video: media.isVideo)))
-                        .font(StudioStyle.title(13, relativeTo: .caption))
-                        .monospacedDigit()
-                        .foregroundStyle(StudioStyle.mute)
-                        .accessibilityLabel("Output dimensions")
-                        .accessibilityValue(dimensions(editor.settings.resolution.size(for: media.size, video: media.isVideo)))
-                }
-            }
             GeometryReader { area in
                 let aspect = media.size.width / media.size.height
                 let width = min(area.size.width, area.size.height * aspect)
@@ -147,7 +136,7 @@ struct StudioView: View {
                     } else if let image = editor.preview {
                         Image(decorative: image, scale: 1)
                             .resizable()
-                            .interpolation(.none)
+                            .interpolation(.medium)
                             .scaledToFit()
                     } else {
                         ProgressView()
@@ -158,22 +147,51 @@ struct StudioView: View {
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
                 .accessibilityHidden(true)
             }
-            HStack(spacing: StudioStyle.gap) {
-                if media.isVideo { transport(media) }
-                else { Spacer(minLength: 0) }
-                Button {
-                    editor.showsOriginal.toggle()
-                } label: {
-                    Image(systemName: editor.showsOriginal ? "circle.lefthalf.filled" : "circle.lefthalf.striped.horizontal")
-                        .frame(minWidth: 44, minHeight: 44)
-                }
-                .buttonStyle(.glass)
-                .accessibilityLabel("Compare with original")
-                .accessibilityValue(editor.showsOriginal ? Text("Original") : Text("Preview"))
-                .accessibilityIdentifier("compare")
-            }
+            if media.isVideo { transport(media) }
+            stageHeader(media)
         }
         .foregroundStyle(StudioStyle.ink)
+    }
+
+    private func stageHeader(_ media: StudioMedia) -> some View {
+        let size = editor.showsOriginal ? media.size : editor.settings.resolution.size(for: media.size, video: media.isVideo)
+        return HStack(spacing: StudioStyle.gap) {
+            VStack(alignment: .leading, spacing: 2) {
+                Text(editor.showsOriginal ? "Original" : "Preview")
+                    .font(StudioStyle.font(15, relativeTo: .subheadline))
+                    .textCase(.uppercase)
+                    .accessibilityAddTraits(.isHeader)
+                    .accessibilityValue(dynamicTypeSize.isAccessibilitySize ? dimensions(size) : "")
+                if !dynamicTypeSize.isAccessibilitySize {
+                    Text("\(dimensions(size)) px")
+                        .font(StudioStyle.font(12, relativeTo: .caption))
+                        .monospacedDigit()
+                        .foregroundStyle(StudioStyle.mute)
+                        .accessibilityLabel(editor.showsOriginal ? "Source dimensions" : "Output dimensions")
+                        .accessibilityValue(dimensions(size))
+                        .accessibilityIdentifier("preview-dimensions")
+                }
+            }
+            .layoutPriority(1)
+            Spacer(minLength: 0)
+            Button {
+                editor.showsOriginal.toggle()
+            } label: {
+                HStack(spacing: 6) {
+                    Image(systemName: "circle.lefthalf.filled")
+                    if !dynamicTypeSize.isAccessibilitySize {
+                        Text(editor.showsOriginal ? "Show edit" : "Show original")
+                            .font(StudioStyle.font(14, relativeTo: .subheadline))
+                    }
+                }
+                .padding(.horizontal, dynamicTypeSize.isAccessibilitySize ? 0 : 4)
+                .frame(minWidth: 44, minHeight: 44)
+            }
+            .buttonStyle(.glass)
+            .accessibilityLabel("Compare with original")
+            .accessibilityValue(editor.showsOriginal ? Text("Original") : Text("Preview"))
+            .accessibilityIdentifier("compare")
+        }
     }
 
     private func transport(_ media: StudioMedia) -> some View {

@@ -19,21 +19,45 @@ final class StudioTests: XCTestCase {
 
         compare.tap()
         XCTAssertEqual(compare.value as? String, "Original")
-        compare.tap()
-        XCTAssertEqual(compare.value as? String, "Preview")
 
         app.buttons["Color"].tap()
         let exposure = app.sliders["Exposure"]
         XCTAssertTrue(exposure.exists)
         exposure.adjust(toNormalizedSliderPosition: 0.67)
+        XCTAssertEqual(compare.value as? String, "Preview")
         app.buttons["Dither"].tap()
-        app.buttons["algorithm"].tap()
+        let algorithm = app.buttons["algorithm"]
+        XCTAssertGreaterThanOrEqual(algorithm.frame.height, 44)
+        XCTAssertGreaterThanOrEqual(compare.frame.height, 44)
+        algorithm.tap()
         app.buttons["Atkinson"].tap()
+
+        let output = app.buttons["Output"]
+        XCTAssertGreaterThanOrEqual(output.frame.height, 44)
+        output.tap()
+        app.buttons["resolution"].tap()
+        app.buttons["640 px"].tap()
+        XCTAssertEqual(app.staticTexts["preview-dimensions"].value as? String, "640 × 640")
 
         app.buttons["export"].tap()
         let render = app.buttons["render-file"]
         XCTAssertTrue(render.waitForExistence(timeout: 6))
+        XCTAssertTrue(render.isHittable)
+        XCTAssertGreaterThanOrEqual(render.frame.height, 44)
+        let export = XCTAttachment(screenshot: app.screenshot())
+        export.name = "DitherPhil export"
+        export.lifetime = .keepAlways
+        add(export)
         render.tap()
         XCTAssertTrue(app.buttons["share-file"].waitForExistence(timeout: 20))
+
+        app.buttons["Done"].tap()
+        app.buttons["Dither"].tap()
+        XCUIDevice.shared.orientation = .landscapeLeft
+        defer { XCUIDevice.shared.orientation = .portrait }
+        let inspectorOnRight = XCTNSPredicateExpectation(predicate: NSPredicate { _, _ in
+            algorithm.frame.minX >= compare.frame.maxX
+        }, object: nil)
+        XCTAssertEqual(XCTWaiter.wait(for: [inspectorOnRight], timeout: 5), .completed)
     }
 }

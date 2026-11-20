@@ -22,46 +22,66 @@ struct Inspector: View {
 
     var body: some View {
         VStack(spacing: 0) {
-            Group {
-                if dynamicTypeSize.isAccessibilitySize {
-                    sectionPicker.pickerStyle(.menu)
-                } else {
-                    sectionPicker.pickerStyle(.segmented)
-                }
-            }
-            .frame(minHeight: 44)
-            .padding(.horizontal, 10)
-
+            sectionPicker
             ScrollView {
-                VStack(alignment: .leading, spacing: 4) {
+                VStack(alignment: .leading, spacing: 0) {
                     switch section {
                     case .dither: dither
                     case .color: color
                     case .output: output
                     }
                 }
-                .padding(.horizontal, 14)
-                .padding(.bottom, 12)
+                .padding(StudioStyle.gap)
             }
             .defaultScrollAnchor(.top)
             .id(section)
         }
-        .padding(.top, 6)
         .foregroundStyle(StudioStyle.ink)
     }
 
+    @ViewBuilder
     private var sectionPicker: some View {
-        Picker("Editor section", selection: $section) {
-            ForEach(InspectorSection.allCases) { section in
-                Text(section.title).tag(section)
+        if dynamicTypeSize.isAccessibilitySize {
+            Picker("Editor section", selection: $section) {
+                ForEach(InspectorSection.allCases) { item in
+                    Text(item.title).tag(item)
+                }
             }
+            .pickerStyle(.menu)
+            .frame(maxWidth: .infinity, minHeight: 44)
+            .padding(.vertical, StudioStyle.gap)
+        } else {
+            HStack(spacing: 0) {
+                ForEach(InspectorSection.allCases) { item in
+                    let selected = item == section
+                    Button {
+                        section = item
+                    } label: {
+                        Text(item.title)
+                            .font(StudioStyle.font(14, relativeTo: .subheadline))
+                            .foregroundStyle(selected ? StudioStyle.ink : StudioStyle.mute)
+                            .frame(maxWidth: .infinity, minHeight: 44)
+                            .contentShape(Rectangle())
+                            .overlay(alignment: .bottom) {
+                                if selected {
+                                    Rectangle().fill(StudioStyle.stroke).frame(height: StudioStyle.rule)
+                                        .allowsHitTesting(false)
+                                }
+                            }
+                    }
+                    .buttonStyle(.plain)
+                    .accessibilityAddTraits(selected ? .isSelected : [])
+                }
+            }
+            .padding(.horizontal, StudioStyle.gap)
+            .background(alignment: .bottom) { Rectangle().fill(StudioStyle.separator).frame(height: 1) }
         }
     }
 
     private var dither: some View {
         Group {
             let layout = dynamicTypeSize.isAccessibilitySize
-                ? AnyLayout(VStackLayout(alignment: .leading, spacing: 2))
+                ? AnyLayout(VStackLayout(alignment: .leading, spacing: StudioStyle.gap))
                 : AnyLayout(HStackLayout(alignment: .top, spacing: StudioStyle.gap))
             layout {
                 option("Algorithm", value: editor.settings.algorithm.name, identifier: "algorithm") {
@@ -71,7 +91,8 @@ struct Inspector: View {
                         }
                     }
                 }
-                option("Palette", value: editor.settings.palette.name, identifier: "palette") {
+                option("Palette", value: editor.settings.palette.name, identifier: "palette",
+                       swatches: editor.settings.colors) {
                     Picker("Palette", selection: $editor.settings.palette) {
                         ForEach(Palette.allCases) { palette in
                             Text(palette.name).tag(palette)
@@ -79,6 +100,7 @@ struct Inspector: View {
                     }
                 }
             }
+            .padding(.bottom, StudioStyle.gap / 2)
 
             StudioSlider("Cell size", value: $editor.settings.cell, in: 1...24, step: 1) {
                 "\(Int($0)) px"
@@ -107,31 +129,53 @@ struct Inspector: View {
         _ label: LocalizedStringKey,
         value: LocalizedStringKey,
         identifier: String,
+        swatches: [SIMD3<Float>] = [],
         @ViewBuilder content: () -> Content
     ) -> some View {
-        VStack(alignment: .leading, spacing: 0) {
-            Text(label)
-                .font(.subheadline)
-                .foregroundStyle(StudioStyle.mute)
-                .accessibilityHidden(true)
-            Menu {
-                content().pickerStyle(.inline)
-            } label: {
-                HStack(alignment: .firstTextBaseline, spacing: 6) {
-                    Text(value)
-                        .fixedSize(horizontal: false, vertical: true)
-                    Image(systemName: "chevron.up.chevron.down")
-                        .imageScale(.small)
+        Menu {
+            content().pickerStyle(.inline)
+        } label: {
+            VStack(alignment: .leading, spacing: 3) {
+                HStack {
+                    Text(label)
+                        .font(StudioStyle.font(12, relativeTo: .caption))
+                        .foregroundStyle(StudioStyle.mute)
+                    Spacer(minLength: 0)
+                    if !dynamicTypeSize.isAccessibilitySize {
+                        HStack(spacing: 1) {
+                            ForEach(swatches.indices, id: \.self) { index in
+                                let rgb = swatches[index]
+                                Rectangle()
+                                    .fill(Color(red: Double(rgb.x), green: Double(rgb.y), blue: Double(rgb.z)))
+                                    .frame(width: 7, height: 7)
+                            }
+                        }
+                        .clipShape(.rect(cornerRadius: 2))
                         .accessibilityHidden(true)
+                    }
                 }
-                .padding(.vertical, 6)
-                .frame(maxWidth: .infinity, minHeight: 44, alignment: .leading)
-                .contentShape(Rectangle())
+                HStack(alignment: .firstTextBaseline, spacing: 4) {
+                    Text(value)
+                        .font(StudioStyle.font(15, relativeTo: .subheadline))
+                        .multilineTextAlignment(.leading)
+                        .fixedSize(horizontal: false, vertical: true)
+                        .layoutPriority(1)
+                    Spacer(minLength: 0)
+                    Image(systemName: "chevron.up.chevron.down")
+                        .font(.caption)
+                        .dynamicTypeSize(...DynamicTypeSize.accessibility1)
+                }
+                .foregroundStyle(StudioStyle.ink)
             }
-            .accessibilityLabel(Text(label))
-            .accessibilityValue(Text(value))
-            .accessibilityIdentifier(identifier)
+            .padding(.horizontal, StudioStyle.gap)
+            .padding(.vertical, 7)
+            .frame(maxWidth: .infinity, minHeight: 52, alignment: .leading)
+            .background(StudioStyle.paper, in: .rect(cornerRadius: 10))
+            .contentShape(.rect(cornerRadius: 10))
         }
+        .accessibilityLabel(Text(label))
+        .accessibilityValue(Text(value))
+        .accessibilityIdentifier(identifier)
     }
 
     private var color: some View {
@@ -150,11 +194,17 @@ struct Inspector: View {
 
     private var output: some View {
         Group {
-            resolution($editor.settings.resolution)
+            option("Resolution", value: editor.settings.resolution.name, identifier: "resolution") {
+                resolution($editor.settings.resolution)
+            }
             if let media = editor.media {
-                LabeledContent("Dimensions", value: dimensions(editor.settings.resolution.size(for: media.size, video: media.isVideo)))
-                    .monospacedDigit()
-                    .frame(minHeight: 44)
+                let size = editor.settings.resolution.size(for: media.size, video: media.isVideo)
+                LabeledContent("Dimensions") {
+                    Text(dimensions(size))
+                        .monospacedDigit()
+                        .foregroundStyle(StudioStyle.mute)
+                }
+                .frame(minHeight: 44)
             }
             Button("Reset adjustments", role: .destructive) { editor.settings = EditSettings() }
                 .frame(minHeight: 44)
@@ -184,27 +234,17 @@ struct ExportSheet: View {
             Form {
                 if let media = editor.media {
                     options(for: media)
-                    .disabled(editor.exporting)
-                    .onChange(of: editor.format) { _, _ in editor.exported = nil }
-                    .onChange(of: editor.settings.resolution) { _, _ in editor.exported = nil }
-                    .onChange(of: editor.quality) { _, _ in editor.exported = nil }
-                }
-                Section {
-                    if editor.exporting {
-                        ProgressView(value: editor.progress) { Text("Rendering…") }
-                            .accessibilityIdentifier("export-progress")
-                        Button("Cancel export", role: .cancel) { editor.cancelExport() }
-                    } else if let file = editor.exported {
-                        ShareLink(item: file.url) { Label("Share or save", systemImage: "square.and.arrow.up") }
-                            .accessibilityIdentifier("share-file")
-                    } else {
-                        Button { editor.export() } label: {
-                            Label("Render file", systemImage: "arrow.down.to.line")
-                        }
-                        .accessibilityIdentifier("render-file")
-                    }
+                        .disabled(editor.exporting)
+                        .onChange(of: editor.format) { _, _ in editor.exported = nil }
+                        .onChange(of: editor.settings.resolution) { _, _ in editor.exported = nil }
+                        .onChange(of: editor.quality) { _, _ in editor.exported = nil }
                 }
             }
+            .font(StudioStyle.font(15, relativeTo: .body))
+            .scrollContentBackground(.hidden)
+            .contentMargins(.top, StudioStyle.margin, for: .scrollContent)
+            .background(StudioStyle.stone)
+            .safeAreaInset(edge: .bottom, spacing: 0) { exportAction }
             .navigationTitle("Export")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
@@ -213,6 +253,7 @@ struct ExportSheet: View {
                 }
             }
         }
+        .tint(StudioStyle.ink)
         .alert("Export", isPresented: Binding(
             get: { editor.error != nil },
             set: { if !$0 { editor.error = nil } }
@@ -221,6 +262,29 @@ struct ExportSheet: View {
         } message: {
             Text(editor.error ?? "")
         }
+    }
+
+    private var exportAction: some View {
+        VStack(spacing: StudioStyle.gap) {
+            if editor.exporting {
+                ProgressView(value: editor.progress) { Text("Rendering…") }
+                    .accessibilityIdentifier("export-progress")
+                Button("Cancel export", role: .cancel) { editor.cancelExport() }
+                    .frame(minHeight: 44)
+            } else if let file = editor.exported {
+                ShareLink(item: file.url) { Label("Share or save", systemImage: "square.and.arrow.up") }
+                    .buttonStyle(StudioPrimaryAction())
+                    .accessibilityIdentifier("share-file")
+            } else {
+                Button { editor.export() } label: { Label("Render file", systemImage: "arrow.down.to.line") }
+                    .buttonStyle(StudioPrimaryAction())
+                    .accessibilityIdentifier("render-file")
+            }
+        }
+        .padding(.horizontal, StudioStyle.margin)
+        .padding(.vertical, StudioStyle.gap)
+        .frame(maxWidth: .infinity)
+        .background(StudioStyle.stone)
     }
 
     private func options(for media: StudioMedia) -> some View {
@@ -233,17 +297,23 @@ struct ExportSheet: View {
                 }
             }
             .pickerStyle(.menu)
-            resolution($editor.settings.resolution)
-            LabeledContent("Dimensions", value: dimensions(size))
-                .monospacedDigit()
+            resolution($editor.settings.resolution).pickerStyle(.menu)
+            LabeledContent("Dimensions") {
+                Text(dimensions(size))
+                    .monospacedDigit()
+                    .foregroundStyle(StudioStyle.mute)
+            }
             if editor.format == .jpeg || editor.format == .heic {
                 StudioSlider("Quality", value: $editor.quality, in: 0.5...1, step: 0.01, display: percent)
             }
         }
+        .listRowBackground(StudioStyle.paper)
     }
 }
 
 struct StudioSlider: View {
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
+    @ScaledMetric(relativeTo: .subheadline) private var labelWidth = 112.0
     let title: LocalizedStringKey
     @Binding var value: Double
     let range: ClosedRange<Double>
@@ -260,14 +330,24 @@ struct StudioSlider: View {
     }
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 0) {
-            LabeledContent { Text(display(value)).monospacedDigit().foregroundStyle(StudioStyle.mute) } label: { Text(title) }
-                .font(.subheadline)
-                .accessibilityHidden(true)
+        let layout = dynamicTypeSize.isAccessibilitySize
+            ? AnyLayout(VStackLayout(alignment: .leading, spacing: 0))
+            : AnyLayout(HStackLayout(alignment: .center, spacing: StudioStyle.gap))
+        layout {
+            VStack(alignment: .leading, spacing: 1) {
+                Text(title).font(StudioStyle.font(14, relativeTo: .subheadline))
+                Text(display(value))
+                    .font(StudioStyle.font(12, relativeTo: .caption))
+                    .monospacedDigit()
+                    .foregroundStyle(StudioStyle.mute)
+            }
+            .frame(width: dynamicTypeSize.isAccessibilitySize ? nil : labelWidth, alignment: .leading)
+            .accessibilityHidden(true)
             Slider(value: $value, in: range, step: step) { Text(title) }
                 .frame(minHeight: 44)
                 .accessibilityValue(display(value))
         }
+        .padding(.vertical, dynamicTypeSize.isAccessibilitySize ? 6 : 2)
     }
 }
 
@@ -277,14 +357,20 @@ struct StudioSlider: View {
             Text(option.name).tag(option)
         }
     }
-    .studioPicker()
 }
 
 private func percent(_ value: Double) -> String { value.formatted(.percent.precision(.fractionLength(0))) }
 
-private extension View {
-    func studioPicker() -> some View {
-        pickerStyle(.menu)
-            .frame(maxWidth: .infinity, minHeight: 44, alignment: .leading)
+private struct StudioPrimaryAction: ButtonStyle {
+    func makeBody(configuration: Configuration) -> some View {
+        configuration.label
+            .font(StudioStyle.font(16, relativeTo: .body))
+            .foregroundStyle(StudioStyle.paper)
+            .padding(.horizontal, StudioStyle.gap)
+            .padding(.vertical, StudioStyle.gap)
+            .frame(maxWidth: .infinity, minHeight: 50)
+            .background(StudioStyle.ink, in: .capsule)
+            .contentShape(.capsule)
+            .opacity(configuration.isPressed ? 0.8 : 1)
     }
 }

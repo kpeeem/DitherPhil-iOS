@@ -37,6 +37,10 @@
 "Preview" = "Превью";
 "Compare with original" = "Сравнить с оригиналом";
 "Output dimensions" = "Размер результата";
+"Source dimensions" = "Размер оригинала";
+"Show original" = "Оригинал";
+"Show edit" = "Обработка";
+"%@ px" = "%@ пикс.";
 "Pause" = "Пауза";
 "Play" = "Воспроизвести";
 "Playback position" = "Позиция воспроизведения";

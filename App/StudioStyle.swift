@@ -12,6 +12,7 @@ enum StudioStyle {
     static let ink = adaptive(0x000000, 0xE8E6E0)
     static let mute = adaptive(0x676661, 0x999893)
     static let stroke = adaptive(0x020202, 0xE8E6E0)
+    static let separator = ink.opacity(0.18)
 
     static let registeredFont: String = {
         if let url = Bundle.main.url(forResource: "KpemSans", withExtension: "ttf") {
@@ -20,7 +21,7 @@ enum StudioStyle {
         return "Iosevka-Aile"
     }()
 
-    static func title(_ size: CGFloat, relativeTo style: Font.TextStyle) -> Font {
+    static func font(_ size: CGFloat, relativeTo style: Font.TextStyle) -> Font {
         .custom(registeredFont, size: size, relativeTo: style)
     }
 
