@@ -3,6 +3,7 @@ import UIKit
 
 struct StudioRange: UIViewRepresentable {
     @Environment(\.colorScheme) private var colorScheme
+    @Environment(\.locale) private var locale
     @Environment(\.isEnabled) private var isEnabled
     @Binding var value: Double
     let range: ClosedRange<Double>
@@ -58,7 +59,9 @@ struct StudioRange: UIViewRepresentable {
             control.setValue(position, animated: false)
         }
         control.increment = Float(step.map { $0 / length } ?? 0.05)
-        control.accessibilityLabel = String(localized: title)
+        var localizedTitle = title
+        localizedTitle.locale = locale
+        control.accessibilityLabel = String(localized: localizedTitle)
         control.accessibilityValue = display(value)
     }
 
@@ -71,8 +74,8 @@ struct StudioRange: UIViewRepresentable {
     }
 
     private static func trackImage(color: UIColor) -> UIImage {
-        dot(size: 4, color: color).resizableImage(
-            withCapInsets: UIEdgeInsets(top: 0, left: 1.5, bottom: 0, right: 1.5),
+        dot(size: 7, color: color).resizableImage(
+            withCapInsets: UIEdgeInsets(top: 0, left: 3, bottom: 0, right: 3),
             resizingMode: .stretch
         )
     }
@@ -87,7 +90,7 @@ struct StudioRange: UIViewRepresentable {
 
         override func trackRect(forBounds bounds: CGRect) -> CGRect {
             let track = super.trackRect(forBounds: bounds)
-            return CGRect(x: track.minX, y: bounds.midY - 2, width: track.width, height: 4)
+            return CGRect(x: track.minX, y: bounds.midY - 3.5, width: track.width, height: 7)
         }
 
         override func accessibilityIncrement() { adjust(by: increment) }

@@ -17,6 +17,23 @@ final class StudioTests: XCTestCase {
         screenshot.lifetime = .keepAlways
         add(screenshot)
 
+        app.buttons["collapse"].tap()
+        XCTAssertFalse(app.buttons["algorithm"].exists)
+        app.buttons["collapse"].tap()
+        app.buttons["palette"].tap()
+        let colors = XCTAttachment(screenshot: app.screenshot())
+        colors.name = "DitherPhil palettes"
+        colors.lifetime = .keepAlways
+        add(colors)
+        app.buttons["Amber"].tap()
+        app.buttons["library"].tap()
+        let name = app.textFields["Preset name"]
+        name.tap()
+        name.typeText("Studio test")
+        let save = app.buttons["Save preset"]
+        if save.exists { save.tap() } else { app.buttons["Update preset"].tap() }
+        app.buttons["Studio test"].tap()
+
         compare.tap()
         XCTAssertEqual(compare.value as? String, "Original")
 
@@ -45,15 +62,16 @@ final class StudioTests: XCTestCase {
         XCTAssertEqual(app.staticTexts["preview-dimensions"].value as? String, "640 × 640")
 
         app.buttons["export"].tap()
-        let render = app.buttons["render-file"]
-        XCTAssertTrue(render.waitForExistence(timeout: 6))
-        XCTAssertTrue(render.isHittable)
-        XCTAssertGreaterThanOrEqual(render.frame.height, 44)
+        let savePhoto = app.buttons["save-photos"]
+        XCTAssertTrue(savePhoto.waitForExistence(timeout: 20))
+        XCTAssertTrue(savePhoto.isHittable)
         let export = XCTAttachment(screenshot: app.screenshot())
         export.name = "DitherPhil export"
         export.lifetime = .keepAlways
         add(export)
-        render.tap()
+        savePhoto.tap()
+        let saved = app.buttons.matching(NSPredicate(format: "label == %@", "Saved to Photos")).firstMatch
+        XCTAssertTrue(saved.waitForExistence(timeout: 8))
         XCTAssertTrue(app.buttons["share-file"].waitForExistence(timeout: 20))
 
         app.buttons["Done"].tap()
@@ -65,4 +83,23 @@ final class StudioTests: XCTestCase {
         }, object: nil)
         XCTAssertEqual(XCTWaiter.wait(for: [inspectorOnRight], timeout: 5), .completed)
     }
+
+    @MainActor
+    func testChooseInterfaceLanguage() {
+        let app = XCUIApplication()
+        app.launchArguments = ["-AppleLanguages", "(en)", "-AppleLocale", "en_US"]
+        app.launch()
+        app.buttons["library"].tap()
+        app.buttons["studio-language"].tap()
+        app.buttons["日本語"].tap()
+        let done = app.buttons["完了"]
+        XCTAssertTrue(done.waitForExistence(timeout: 4))
+        done.tap()
+        XCTAssertTrue(app.buttons["色"].exists)
+        app.buttons["library"].tap()
+        app.buttons["studio-language"].tap()
+        app.buttons["システム設定"].tap()
+        app.buttons["Done"].tap()
+    }
+
 }

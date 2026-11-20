@@ -37,7 +37,7 @@ final class Editor {
     private(set) var exporting = false
     private(set) var progress = 0.0
     private(set) var time = 0.0
-    private(set) var playing = false
+    private(set) var wantsPlayback = false
 
     let player = AVPlayer()
     @ObservationIgnored private let renderer = PhotoPreview()
@@ -45,7 +45,6 @@ final class Editor {
     @ObservationIgnored private var importTask: Task<Void, Never>?
     @ObservationIgnored private var exportTask: Task<Void, Never>?
     @ObservationIgnored private var timeObserver: Any?
-    @ObservationIgnored private var rateObserver: NSKeyValueObservation?
     @ObservationIgnored private var endObserver: (any NSObjectProtocol)?
 
     var previewRequest: PreviewRequest {
@@ -65,18 +64,15 @@ final class Editor {
         exportTask?.cancel()
     }
 
-    func start() {
+    func start(with initialFile: StudioFile? = nil) {
         guard pipeline == nil else { return }
         do {
             pipeline = try MediaPipeline()
+            player.actionAtItemEnd = .none
             timeObserver = player.addPeriodicTimeObserver(
                 forInterval: CMTime(value: 1, timescale: 5), queue: .main
             ) { [weak self] time in
                 MainActor.assumeIsolated { self?.time = time.seconds.isFinite ? time.seconds : 0 }
-            }
-            rateObserver = player.observe(\.rate, options: [.new]) { [weak self] player, _ in
-                let playing = player.rate != 0
-                Task { @MainActor in self?.playing = playing }
             }
             endObserver = NotificationCenter.default.addObserver(
                 forName: .AVPlayerItemDidPlayToEndTime, object: nil, queue: .main
@@ -84,11 +80,15 @@ final class Editor {
                 let item = notification.object as? AVPlayerItem
                 MainActor.assumeIsolated {
                     guard let self, item === self.player.currentItem else { return }
-                    self.player.pause()
-                    self.seek(0)
+                    guard self.wantsPlayback, let item else { return }
+                    Task { @MainActor in
+                        let rewound = await self.player.seek(to: .zero, toleranceBefore: .zero, toleranceAfter: .zero)
+                        if rewound, self.wantsPlayback, self.player.currentItem === item { self.player.play() }
+                    }
                 }
             }
-            loadSample()
+            if let initialFile { beginImport { try await StudioMedia.load(initialFile) } }
+            else { loadSample() }
         } catch {
             self.error = error.localizedDescription
         }
@@ -121,7 +121,7 @@ final class Editor {
     private func beginImport(_ load: @escaping @MainActor () async throws -> StudioMedia) {
         guard let pipeline else { return }
         importTask?.cancel()
-        player.pause()
+        setPlayback(false)
         loading = true
         importTask = Task {
             defer { if !Task.isCancelled { loading = false; importTask = nil } }
@@ -149,7 +149,7 @@ final class Editor {
         pipeline.updateVideo(edits)
         do {
             if media.isVideo {
-                guard !playing else { return }
+                guard !wantsPlayback else { return }
                 try await Task.sleep(for: .milliseconds(48))
                 await player.seek(to: player.currentTime(), toleranceBefore: .zero, toleranceAfter: .zero)
             } else {
@@ -171,7 +171,12 @@ final class Editor {
     }
 
     func togglePlayback() {
-        if playing { player.pause() } else { player.play() }
+        setPlayback(!wantsPlayback)
+    }
+
+    func setPlayback(_ enabled: Bool) {
+        wantsPlayback = enabled
+        if enabled { player.play() } else { player.pause() }
     }
 
     func export() {
@@ -179,7 +184,7 @@ final class Editor {
         let settings = settings
         let format = format
         let quality = quality
-        player.pause()
+        setPlayback(false)
         progress = 0
         exporting = true
         exported = nil

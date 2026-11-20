@@ -6,6 +6,12 @@ import UniformTypeIdentifiers
 struct StudioView: View {
     @Environment(\.scenePhase) private var scenePhase
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
+    var initialFile: StudioFile?
+    var onFinish: (() -> Void)?
+    @AppStorage("studio.appearance") private var appearance = "dark"
+    @AppStorage("studio.language") private var language = "system"
+    @State private var collapsed = false
+    @State private var showsLibrary = false
     @State private var editor = Editor()
     @State private var section: InspectorSection = .dither
     @State private var showsImport = false
@@ -24,7 +30,7 @@ struct StudioView: View {
                     Rectangle().fill(StudioStyle.stroke).frame(height: StudioStyle.rule)
                     if let media = editor.media {
                         workspace(media, size: geometry.size)
-                            .padding(.horizontal, StudioStyle.margin)
+                            .padding(.horizontal, collapsed ? 0 : StudioStyle.margin)
                             .padding(.vertical, StudioStyle.gap)
                     } else {
                         ContentUnavailableView("Choose a photo or video", systemImage: "photo.on.rectangle")
@@ -49,21 +55,32 @@ struct StudioView: View {
                         .accessibilityAddTraits(.isHeader)
                 }
                 ToolbarItem(placement: .topBarLeading) {
-                    Button("Import", systemImage: "photo.badge.plus") { showsImport = true }
-                        .accessibilityIdentifier("import")
+                    if let onFinish {
+                        Button("Done", action: onFinish)
+                    } else {
+                        Button("Import", systemImage: "photo.badge.plus") { showsImport = true }
+                            .accessibilityIdentifier("import")
+                    }
                 }
                 ToolbarItem(placement: .topBarTrailing) {
-                    Button("Export", systemImage: "square.and.arrow.up") { showsExport = true }
+                    Button("Presets & settings", systemImage: "bookmark") { showsLibrary = true }
+                        .accessibilityIdentifier("library")
+                }
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button("Export", systemImage: "square.and.arrow.up") {
+                        showsExport = true
+                        if editor.media?.isVideo == false { editor.export() }
+                    }
                         .accessibilityIdentifier("export")
                         .disabled(editor.media == nil || editor.loading || editor.exporting)
                 }
             }
         }
         .tint(StudioStyle.ink)
-        .task { editor.start() }
+        .task { editor.start(with: initialFile) }
         .task(id: editor.previewRequest) { await editor.updatePreview() }
         .onChange(of: scenePhase) { _, phase in
-            if phase != .active { editor.player.pause() }
+            if phase == .background { editor.setPlayback(false) }
         }
         .onChange(of: editor.settings) { _, _ in editor.showsOriginal = false }
         .confirmationDialog("Open media", isPresented: $showsImport, titleVisibility: .visible) {
@@ -82,10 +99,12 @@ struct StudioView: View {
             case .failure(let error): editor.error = error.localizedDescription
             }
         }
+        .sheet(isPresented: $showsLibrary) {
+            StudioLibrarySheet(editor: editor)
+        }
         .sheet(isPresented: $showsExport, onDismiss: { editor.exported = nil }) {
             ExportSheet(editor: editor)
                 .presentationDetents(dynamicTypeSize.isAccessibilitySize ? [.large] : [.fraction(0.54), .large])
-                .interactiveDismissDisabled(editor.exporting)
         }
         .alert("DitherPhil", isPresented: Binding(
             get: { editor.error != nil },
@@ -95,6 +114,8 @@ struct StudioView: View {
         } message: {
             Text(editor.error ?? "")
         }
+        .preferredColorScheme(appearance == "system" ? nil : (appearance == "light" ? .light : .dark))
+        .environment(\.locale, language == "system" ? Locale.autoupdatingCurrent : Locale(identifier: language))
     }
 
     private func workspace(_ media: StudioMedia, size: CGSize) -> some View {
@@ -105,7 +126,9 @@ struct StudioView: View {
             .clipShape(.rect(cornerRadius: StudioStyle.radius))
 
         return Group {
-            if wide {
+            if collapsed {
+                stage(media)
+            } else if wide {
                 let paneWidth = min(420, (size.width - 2 * StudioStyle.margin) * 0.44)
                 HStack(alignment: .top, spacing: StudioStyle.margin) {
                     stage(media)
@@ -148,8 +171,8 @@ struct StudioView: View {
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
                 .accessibilityHidden(true)
             }
-            if media.isVideo { transport(media) }
-            stageHeader(media)
+            if media.isVideo { transport(media).padding(.horizontal, collapsed ? StudioStyle.margin : 0) }
+            stageHeader(media).padding(.horizontal, collapsed ? StudioStyle.margin : 0)
         }
         .foregroundStyle(StudioStyle.ink)
     }
@@ -194,6 +217,14 @@ struct StudioView: View {
             .accessibilityLabel("Compare with original")
             .accessibilityValue(editor.showsOriginal ? Text("Original") : Text("Preview"))
             .accessibilityIdentifier("compare")
+            Button { collapsed.toggle() } label: {
+                Image(systemName: collapsed ? "slider.horizontal.3" : "rectangle.compress.vertical")
+                    .frame(minWidth: 44, minHeight: 44)
+                    .background(StudioStyle.stone, in: .circle)
+            }
+            .buttonStyle(.plain)
+            .accessibilityLabel(collapsed ? "Show controls" : "Hide controls")
+            .accessibilityIdentifier("collapse")
         }
     }
 
@@ -202,11 +233,11 @@ struct StudioView: View {
             Button {
                 editor.togglePlayback()
             } label: {
-                Image(systemName: editor.playing ? "pause.fill" : "play.fill")
+                Image(systemName: editor.wantsPlayback ? "pause.fill" : "play.fill")
                     .frame(minWidth: 44, minHeight: 44)
             }
             .buttonStyle(.glass)
-            .accessibilityLabel(editor.playing ? "Pause" : "Play")
+            .accessibilityLabel(editor.wantsPlayback ? "Pause" : "Play")
             .accessibilityIdentifier("playback")
 
             StudioRange(
@@ -218,11 +249,11 @@ struct StudioView: View {
             ) { editing in
                 if editing {
                     position = editor.time
-                    resumeAfterScrub = editor.playing
-                    editor.player.pause()
+                    resumeAfterScrub = editor.wantsPlayback
+                    editor.setPlayback(false)
                 } else {
                     editor.seek(position)
-                    if resumeAfterScrub { editor.player.play() }
+                    if resumeAfterScrub { editor.setPlayback(true) }
                 }
                 scrubbing = editing
             }

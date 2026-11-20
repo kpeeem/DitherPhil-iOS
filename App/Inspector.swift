@@ -19,6 +19,7 @@ struct Inspector: View {
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
     @Bindable var editor: Editor
     @Binding var section: InspectorSection
+    @State private var showsPalettes = false
 
     var body: some View {
         VStack(spacing: 0) {
@@ -92,13 +93,35 @@ struct Inspector: View {
                         }
                     }
                 }
-                option("Palette", value: editor.settings.palette.name, identifier: "palette",
-                       swatches: editor.settings.colors) {
-                    Picker("Palette", selection: $editor.settings.palette) {
-                        ForEach(Palette.allCases) { palette in
-                            Text(palette.name).tag(palette)
+                Button { showsPalettes = true } label: {
+                    optionLabel("Palette", value: editor.settings.palette.name, swatches: samples(editor.settings.palette))
+                }
+                .buttonStyle(.plain)
+                .accessibilityIdentifier("palette")
+                .popover(isPresented: $showsPalettes) {
+                    ScrollView {
+                        VStack(spacing: 0) {
+                            ForEach(Palette.allCases) { palette in
+                                Button {
+                                    editor.settings.palette = palette
+                                    showsPalettes = false
+                                } label: {
+                                    HStack(spacing: 12) {
+                                        swatchStrip(samples(palette), size: 9)
+                                        Text(palette.name)
+                                        Spacer()
+                                        if editor.settings.palette == palette { Image(systemName: "checkmark") }
+                                    }
+                                    .padding(.horizontal, 14)
+                                    .frame(minHeight: 48)
+                                    .contentShape(Rectangle())
+                                }
+                                .buttonStyle(.plain)
+                            }
                         }
                     }
+                    .frame(idealWidth: 285, idealHeight: 300)
+                    .presentationCompactAdaptation(.popover)
                 }
             }
             .padding(.bottom, StudioStyle.gap / 2)
@@ -130,53 +153,71 @@ struct Inspector: View {
         _ label: LocalizedStringKey,
         value: LocalizedStringKey,
         identifier: String,
-        swatches: [SIMD3<Float>] = [],
         @ViewBuilder content: () -> Content
     ) -> some View {
         Menu {
             content().pickerStyle(.inline)
         } label: {
-            VStack(alignment: .leading, spacing: 3) {
-                HStack {
-                    Text(label)
-                        .font(StudioStyle.font(12, relativeTo: .caption))
-                        .foregroundStyle(StudioStyle.mute)
-                    Spacer(minLength: 0)
-                    if !dynamicTypeSize.isAccessibilitySize {
-                        HStack(spacing: 1) {
-                            ForEach(swatches.indices, id: \.self) { index in
-                                let rgb = swatches[index]
-                                Rectangle()
-                                    .fill(Color(red: Double(rgb.x), green: Double(rgb.y), blue: Double(rgb.z)))
-                                    .frame(width: 7, height: 7)
-                            }
-                        }
-                        .clipShape(.rect(cornerRadius: 2))
-                        .accessibilityHidden(true)
-                    }
-                }
-                HStack(alignment: .firstTextBaseline, spacing: 4) {
-                    Text(value)
-                        .font(StudioStyle.font(15, relativeTo: .subheadline))
-                        .multilineTextAlignment(.leading)
-                        .fixedSize(horizontal: false, vertical: true)
-                        .layoutPriority(1)
-                    Spacer(minLength: 0)
-                    Image(systemName: "chevron.up.chevron.down")
-                        .font(.caption)
-                        .dynamicTypeSize(...DynamicTypeSize.accessibility1)
-                }
-                .foregroundStyle(StudioStyle.ink)
-            }
-            .padding(.horizontal, StudioStyle.gap)
-            .padding(.vertical, 7)
-            .frame(maxWidth: .infinity, minHeight: 52, alignment: .leading)
-            .background(StudioStyle.paper, in: .rect(cornerRadius: 10))
-            .contentShape(.rect(cornerRadius: 10))
+            optionLabel(label, value: value, swatches: [])
         }
         .accessibilityLabel(Text(label))
         .accessibilityValue(Text(value))
         .accessibilityIdentifier(identifier)
+    }
+
+    private func samples(_ palette: Palette) -> [SIMD3<Float>] {
+        switch palette {
+        case .rgb: [rgbHex(0xD35B52), rgbHex(0x70AC74), rgbHex(0x609BC9)]
+        case .grayscale:
+            (0..<min(6, Int(editor.settings.levels))).map {
+                SIMD3(repeating: Float($0) / Float(min(6, Int(editor.settings.levels)) - 1))
+            }
+        case .custom: [editor.settings.shadow, editor.settings.highlight]
+        default: palette.colors
+        }
+    }
+
+    private func swatchStrip(_ colors: [SIMD3<Float>], size: CGFloat) -> some View {
+        HStack(spacing: 1) {
+            ForEach(colors.indices, id: \.self) { i in
+                let c = colors[i]
+                Rectangle().fill(Color(red: Double(c.x), green: Double(c.y), blue: Double(c.z)))
+                    .frame(width: size, height: size)
+            }
+        }
+        .clipShape(.rect(cornerRadius: 2))
+        .accessibilityHidden(true)
+    }
+
+    private func optionLabel(_ label: LocalizedStringKey, value: LocalizedStringKey, swatches: [SIMD3<Float>]) -> some View {
+        VStack(alignment: .leading, spacing: 3) {
+            HStack {
+                Text(label)
+                    .font(StudioStyle.font(12, relativeTo: .caption))
+                    .foregroundStyle(StudioStyle.mute)
+                Spacer(minLength: 0)
+                if !dynamicTypeSize.isAccessibilitySize {
+                    swatchStrip(swatches, size: 7)
+                }
+            }
+            HStack(alignment: .firstTextBaseline, spacing: 4) {
+                Text(value)
+                    .font(StudioStyle.font(15, relativeTo: .subheadline))
+                    .multilineTextAlignment(.leading)
+                    .fixedSize(horizontal: false, vertical: true)
+                    .layoutPriority(1)
+                Spacer(minLength: 0)
+                Image(systemName: "chevron.up.chevron.down")
+                    .font(.caption)
+                    .dynamicTypeSize(...DynamicTypeSize.accessibility1)
+            }
+            .foregroundStyle(StudioStyle.ink)
+        }
+        .padding(.horizontal, StudioStyle.gap)
+        .padding(.vertical, 7)
+        .frame(maxWidth: .infinity, minHeight: 52, alignment: .leading)
+        .background(StudioStyle.paper, in: .rect(cornerRadius: 10))
+        .contentShape(.rect(cornerRadius: 10))
     }
 
     private var color: some View {
@@ -229,16 +270,19 @@ struct Inspector: View {
 struct ExportSheet: View {
     @Environment(\.dismiss) private var dismiss
     @Bindable var editor: Editor
+    @State private var saving = false
+    @State private var saved = false
+    @Environment(\.locale) private var locale
 
     var body: some View {
         NavigationStack {
             Form {
                 if let media = editor.media {
                     options(for: media)
-                        .disabled(editor.exporting)
-                        .onChange(of: editor.format) { _, _ in editor.exported = nil }
-                        .onChange(of: editor.settings.resolution) { _, _ in editor.exported = nil }
-                        .onChange(of: editor.quality) { _, _ in editor.exported = nil }
+                        .disabled(editor.exporting || saving)
+                        .onChange(of: editor.format) { _, _ in invalidate() }
+                        .onChange(of: editor.settings.resolution) { _, _ in invalidate() }
+                        .onChange(of: editor.quality) { _, _ in invalidate() }
                 }
             }
             .font(StudioStyle.font(15, relativeTo: .body))
@@ -250,10 +294,11 @@ struct ExportSheet: View {
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
-                    Button("Done") { dismiss() }.disabled(editor.exporting)
+                    Button("Done") { dismiss() }.disabled(editor.exporting || saving)
                 }
             }
         }
+        .interactiveDismissDisabled(editor.exporting || saving)
         .tint(StudioStyle.ink)
         .alert("Export", isPresented: Binding(
             get: { editor.error != nil },
@@ -265,6 +310,12 @@ struct ExportSheet: View {
         }
     }
 
+    private func invalidate() {
+        saved = false
+        editor.exported = nil
+        if editor.media?.isVideo == false { editor.export() }
+    }
+
     private var exportAction: some View {
         VStack(spacing: StudioStyle.gap) {
             if editor.exporting {
@@ -273,8 +324,25 @@ struct ExportSheet: View {
                 Button("Cancel export", role: .cancel) { editor.cancelExport() }
                     .frame(minHeight: 44)
             } else if let file = editor.exported {
-                ShareLink(item: file.url) { Label("Share or save", systemImage: "square.and.arrow.up") }
-                    .buttonStyle(StudioPrimaryAction())
+                Button {
+                    saving = true
+                    Task {
+                        defer { saving = false }
+                        do {
+                            try await PhotoLibrary.save(file, video: editor.media?.isVideo == true)
+                            saved = true
+                        } catch PhotoError.denied {
+                            editor.error = String(localized: "Allow adding photos in Settings to save this file.", locale: locale)
+                        } catch { editor.error = error.localizedDescription }
+                    }
+                } label: {
+                    Label(saved ? "Saved to Photos" : "Save to Photos", systemImage: saved ? "checkmark" : "photo.badge.arrow.down")
+                }
+                .buttonStyle(StudioPrimaryAction())
+                .disabled(saving || saved)
+                .accessibilityIdentifier("save-photos")
+                ShareLink(item: file.url) { Label("Share file", systemImage: "square.and.arrow.up") }
+                    .frame(minHeight: 44)
                     .accessibilityIdentifier("share-file")
             } else {
                 Button { editor.export() } label: { Label("Render file", systemImage: "arrow.down.to.line") }
@@ -315,7 +383,7 @@ struct ExportSheet: View {
 struct StudioSlider: View {
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
     @ScaledMetric(relativeTo: .subheadline) private var labelWidth = 120.0
-    @ScaledMetric(relativeTo: .caption) private var valueWidth = 70.0
+    @ScaledMetric(relativeTo: .caption) private var valueWidth = 53.0
     let title: LocalizedStringResource
     @Binding var value: Double
     let range: ClosedRange<Double>

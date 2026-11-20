@@ -5,8 +5,8 @@ options:
 settings:
   base:
     SWIFT_VERSION: "6.0"
-    MARKETING_VERSION: "1.0.3"
-    CURRENT_PROJECT_VERSION: "6"
+    MARKETING_VERSION: "1.1.0"
+    CURRENT_PROJECT_VERSION: "7"
 targets:
   DitherPhil:
     type: application
@@ -22,6 +22,7 @@ targets:
         PRODUCT_BUNDLE_IDENTIFIER: app.kpem.ditherphil.ios
         TARGETED_DEVICE_FAMILY: "1,2"
         GENERATE_INFOPLIST_FILE: YES
+        INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription: Save your rendered photos and videos to Photos.
         INFOPLIST_KEY_CFBundleDisplayName: DitherPhil
         INFOPLIST_KEY_UILaunchScreen_Generation: YES
         INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents: YES
@@ -29,7 +30,10 @@ targets:
         INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad: "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight"
         ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
         ENABLE_USER_SCRIPT_SANDBOXING: NO
-    postBuildScripts:
+    dependencies:
+      - target: DitherPhilShare
+        embed: true
+    postBuildScripts: &metalBuild
       - name: Build Core Image Metal library
         inputFiles:
           - $(SRCROOT)/App/Dither.ci.metal
@@ -41,6 +45,36 @@ targets:
           mkdir -p "$(dirname "$SCRIPT_OUTPUT_FILE_0")"
           xcrun --sdk "$PLATFORM_NAME" metal -fcikernel -x metal -c - -o "$TARGET_TEMP_DIR/Dither.air" < App/Dither.ci.metal
           xcrun --sdk "$PLATFORM_NAME" metallib -cikernel "$TARGET_TEMP_DIR/Dither.air" -o "$SCRIPT_OUTPUT_FILE_0"
+  DitherPhilShare:
+    type: app-extension
+    platform: iOS
+    sources:
+      - path: App
+        excludes: [DitherPhilApp.swift, DitherShortcuts.swift, Dither.ci.metal]
+      - path: Share
+        excludes: [Info.plist]
+    info:
+      path: Share/Info.plist
+      properties:
+        CFBundleShortVersionString: $(MARKETING_VERSION)
+        CFBundleVersion: $(CURRENT_PROJECT_VERSION)
+        CFBundleDisplayName: DitherPhil
+        NSPhotoLibraryAddUsageDescription: Save your rendered photos and videos to Photos.
+        NSExtension:
+          NSExtensionPointIdentifier: com.apple.share-services
+          NSExtensionPrincipalClass: $(PRODUCT_MODULE_NAME).ShareController
+          NSExtensionAttributes:
+            NSExtensionActivationRule:
+              NSExtensionActivationSupportsImageWithMaxCount: 1
+              NSExtensionActivationSupportsMovieWithMaxCount: 1
+              NSExtensionActivationSupportsAttachmentsWithMaxCount: 1
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: app.kpem.ditherphil.ios.share
+        TARGETED_DEVICE_FAMILY: "1,2"
+        APPLICATION_EXTENSION_API_ONLY: YES
+        ENABLE_USER_SCRIPT_SANDBOXING: NO
+    postBuildScripts: *metalBuild
   DitherPhilTests:
     type: bundle.unit-test
     platform: iOS

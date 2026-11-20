@@ -7,22 +7,46 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		11EC74FC091D89133D065F4F /* PhotoLibrary.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28D63CF75669D9C4D707A91C /* PhotoLibrary.swift */; };
+		13B181E30CC781D11386856F /* OFL-Iosevka.txt in Resources */ = {isa = PBXBuildFile; fileRef = 9BB23EE1355CDE5C116A0034 /* OFL-Iosevka.txt */; };
 		1BE1346DE04861440CB6F385 /* Media.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7ED63F831BDB2B63632BC47F /* Media.swift */; };
+		1FCA641A4234DDC2EF263B47 /* StudioStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79811DC35278ABDF7A2495EA /* StudioStyle.swift */; };
+		2B3C20B9E6EF1A6EA10777FE /* StudioPresets.swift in Sources */ = {isa = PBXBuildFile; fileRef = B797488FE13F554E1DEAEB4B /* StudioPresets.swift */; };
 		48BA5BA93D1A98D0EB1A9B4B /* StudioTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62D24876C7CB94E8D4008E57 /* StudioTests.swift */; };
+		4D2A1A11DB19C60F80C4C687 /* AppShortcuts.strings in Resources */ = {isa = PBXBuildFile; fileRef = BC772AB52861FB5834F8D20B /* AppShortcuts.strings */; };
 		5447CD5443905E6FBC16011F /* KpemSans.ttf in Resources */ = {isa = PBXBuildFile; fileRef = EA0E45675B15133062934903 /* KpemSans.ttf */; };
+		5B07FB5179EF9639D3DAFF32 /* Editor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0958DA7CA6A74822B83705CF /* Editor.swift */; };
+		62E4982B7ED31EB72567710B /* AppShortcuts.strings in Resources */ = {isa = PBXBuildFile; fileRef = BC772AB52861FB5834F8D20B /* AppShortcuts.strings */; };
 		63894632FBF46491C13A5D0E /* StudioStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79811DC35278ABDF7A2495EA /* StudioStyle.swift */; };
+		64EFF691677BB94260DA5C99 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 3ACFFCD76F9BEA5E3D21D160 /* InfoPlist.strings */; };
+		679B0F244C5F3F2FE8E46FEB /* Inspector.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF53F6A5BF6585721495CE36 /* Inspector.swift */; };
+		6B1C9FA345688425EC4C467F /* Settings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 281411921B68441F0C6B8E43 /* Settings.swift */; };
+		6F6D0F5D89BBB70B7607CAF0 /* StudioPresets.swift in Sources */ = {isa = PBXBuildFile; fileRef = B797488FE13F554E1DEAEB4B /* StudioPresets.swift */; };
+		71F00340BDFCD21E4B97CDE0 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 3ACFFCD76F9BEA5E3D21D160 /* InfoPlist.strings */; };
+		7C4CE1A1B68706652E641A6E /* StudioRange.swift in Sources */ = {isa = PBXBuildFile; fileRef = 920B912A1AB0166C8D125121 /* StudioRange.swift */; };
 		802826A5CBCAF61436C04183 /* Inspector.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF53F6A5BF6585721495CE36 /* Inspector.swift */; };
 		89F11C3B2E594EBD533178B3 /* DitherRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8738C5F64D5C0FB124D9C708 /* DitherRenderer.swift */; };
 		92F71B4028A183212BB6E609 /* StudioRange.swift in Sources */ = {isa = PBXBuildFile; fileRef = 920B912A1AB0166C8D125121 /* StudioRange.swift */; };
-		BC08EB296769F1D18DD23AF0 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = F4D96AF036CD8C8066676E91 /* Localizable.strings */; };
+		9927CAA8FC72EADBF11E3211 /* PhotoLibrary.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28D63CF75669D9C4D707A91C /* PhotoLibrary.swift */; };
+		9B12BE408D1CC2EC3D0C92CF /* DitherShortcuts.swift in Sources */ = {isa = PBXBuildFile; fileRef = 891ED73763C097181B7CE7D7 /* DitherShortcuts.swift */; };
+		A2603F28EF192491EE26F3A1 /* KpemSans.ttf in Resources */ = {isa = PBXBuildFile; fileRef = EA0E45675B15133062934903 /* KpemSans.ttf */; };
+		AD6CA8E641F8E6C65A264B99 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 9F5A58E2DC87DA344EEAEB07 /* Localizable.strings */; };
+		B7E8B92D5677AADD67DC2250 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 9F5A58E2DC87DA344EEAEB07 /* Localizable.strings */; };
+		BC3DD284A5A10DCF13CE3D61 /* DitherRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8738C5F64D5C0FB124D9C708 /* DitherRenderer.swift */; };
+		C1C6F12AFDC0B3228B6BE481 /* DitherPhilShare.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 5D873A11E9F5A61BA5D0B6BE /* DitherPhilShare.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		C26BE79C8FC9D1230D35EA7A /* StudioView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59F77F82DAD371C8BC20907D /* StudioView.swift */; };
+		C48AD7B22006424F1836773D /* StudioWorkflowTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F29ACF7DF5D8B55004861A2E /* StudioWorkflowTests.swift */; };
 		C6ACD4738E9100CA1F2508A8 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A180085AE37A2C8B86CB2AD3 /* Assets.xcassets */; };
 		C71646B23394D22239211F82 /* Settings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 281411921B68441F0C6B8E43 /* Settings.swift */; };
+		D0EEAC0BE8D50AEF8A29C48E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A180085AE37A2C8B86CB2AD3 /* Assets.xcassets */; };
 		D2E360D7B9248F7E19114A81 /* OFL-Iosevka.txt in Resources */ = {isa = PBXBuildFile; fileRef = 9BB23EE1355CDE5C116A0034 /* OFL-Iosevka.txt */; };
+		D5888E7C99D34C3490D7696B /* ShareController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC8F427256218925A4A6E0AD /* ShareController.swift */; };
 		D5CC8B6077966E518EAD944D /* DitherPhilApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB527DFDDB46F4D7FC49B363 /* DitherPhilApp.swift */; };
 		D88A650C4B207DD18234C581 /* Rotation.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 7FE79C298CA5F048F77353EC /* Rotation.mp4 */; };
 		DCB9757412F3C22405AA8691 /* Editor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0958DA7CA6A74822B83705CF /* Editor.swift */; };
 		EBBFAA2F3479CA759D325169 /* MediaPipelineTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B8C41BA095DFA4E6CF52257 /* MediaPipelineTests.swift */; };
 		EE1FDD5C4564AE88C9C6AB8F /* StudioView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59F77F82DAD371C8BC20907D /* StudioView.swift */; };
+		F3943D202B314CB0327892CB /* Media.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7ED63F831BDB2B63632BC47F /* Media.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -33,6 +57,13 @@
 			remoteGlobalIDString = FBF6F70B2ACD2642477325D4;
 			remoteInfo = DitherPhil;
 		};
+		854F3C63675615396914D6E9 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 5B955D67DC8D5CE88AF9FCE6 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 3C73EB67288370C48D421068;
+			remoteInfo = DitherPhilShare;
+		};
 		D84F00C378ADEF0E7F92622A /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 5B955D67DC8D5CE88AF9FCE6 /* Project object */;
@@ -42,27 +73,55 @@
 		};
 /* End PBXContainerItemProxy section */
 
+/* Begin PBXCopyFilesBuildPhase section */
+		948789FA0200AB5EE3D6A352 /* Embed Foundation Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				C1C6F12AFDC0B3228B6BE481 /* DitherPhilShare.appex in Embed Foundation Extensions */,
+			);
+			name = "Embed Foundation Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
 		0958DA7CA6A74822B83705CF /* Editor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Editor.swift; sourceTree = "<group>"; };
+		0B25698DC1F499D1EA7ADA67 /* ja */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ja; path = ja.lproj/Localizable.strings; sourceTree = "<group>"; };
+		18D0FA96BA00C5190C02DE9F /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		281411921B68441F0C6B8E43 /* Settings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Settings.swift; sourceTree = "<group>"; };
+		28D63CF75669D9C4D707A91C /* PhotoLibrary.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoLibrary.swift; sourceTree = "<group>"; };
+		3D26ACEC35B285E32B756785 /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		41A4396D0BF6F9D6A1FC318F /* DitherPhil.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = DitherPhil.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		59F77F82DAD371C8BC20907D /* StudioView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StudioView.swift; sourceTree = "<group>"; };
+		5D873A11E9F5A61BA5D0B6BE /* DitherPhilShare.appex */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = "wrapper.app-extension"; path = DitherPhilShare.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		62D24876C7CB94E8D4008E57 /* StudioTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StudioTests.swift; sourceTree = "<group>"; };
+		664B9F7A22426227CB6CB8FC /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/AppShortcuts.strings; sourceTree = "<group>"; };
 		79811DC35278ABDF7A2495EA /* StudioStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StudioStyle.swift; sourceTree = "<group>"; };
 		7ED63F831BDB2B63632BC47F /* Media.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Media.swift; sourceTree = "<group>"; };
 		7FE79C298CA5F048F77353EC /* Rotation.mp4 */ = {isa = PBXFileReference; path = Rotation.mp4; sourceTree = "<group>"; };
 		8738C5F64D5C0FB124D9C708 /* DitherRenderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DitherRenderer.swift; sourceTree = "<group>"; };
+		891ED73763C097181B7CE7D7 /* DitherShortcuts.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DitherShortcuts.swift; sourceTree = "<group>"; };
 		8B8C41BA095DFA4E6CF52257 /* MediaPipelineTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MediaPipelineTests.swift; sourceTree = "<group>"; };
+		917D2FD4B0BA6EE7A9FF5CE7 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/AppShortcuts.strings; sourceTree = "<group>"; };
 		920B912A1AB0166C8D125121 /* StudioRange.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StudioRange.swift; sourceTree = "<group>"; };
 		9BB23EE1355CDE5C116A0034 /* OFL-Iosevka.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = "OFL-Iosevka.txt"; sourceTree = "<group>"; };
 		9CEF221DC89BAF7E7C1D578C /* DitherPhilUITests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = DitherPhilUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		A180085AE37A2C8B86CB2AD3 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		B797488FE13F554E1DEAEB4B /* StudioPresets.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StudioPresets.swift; sourceTree = "<group>"; };
 		B8765F9A4EBB1756843037BC /* DitherPhilTests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = DitherPhilTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		BE275C27616B0E0D9EACF667 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		C2F8C153E049F0200C4F22D5 /* ja */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ja; path = ja.lproj/AppShortcuts.strings; sourceTree = "<group>"; };
+		CB08393D703CEDAB7BB0C50A /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/Localizable.strings; sourceTree = "<group>"; };
+		CB2FB8159466EC2B8EC7123D /* ja */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ja; path = ja.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		CF53F6A5BF6585721495CE36 /* Inspector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Inspector.swift; sourceTree = "<group>"; };
 		DB527DFDDB46F4D7FC49B363 /* DitherPhilApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DitherPhilApp.swift; sourceTree = "<group>"; };
 		EA0E45675B15133062934903 /* KpemSans.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = KpemSans.ttf; sourceTree = "<group>"; };
-		F4D96AF036CD8C8066676E91 /* Localizable.strings */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = Localizable.strings; path = ru.lproj/Localizable.strings; sourceTree = "<group>"; };
+		F29ACF7DF5D8B55004861A2E /* StudioWorkflowTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StudioWorkflowTests.swift; sourceTree = "<group>"; };
 		F4E694791B6014B55819D551 /* Dither.ci.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = Dither.ci.metal; sourceTree = "<group>"; };
+		FC8F427256218925A4A6E0AD /* ShareController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXGroup section */
@@ -70,6 +129,7 @@
 			isa = PBXGroup;
 			children = (
 				8B8C41BA095DFA4E6CF52257 /* MediaPipelineTests.swift */,
+				F29ACF7DF5D8B55004861A2E /* StudioWorkflowTests.swift */,
 				C08EFEA66EB9413378248681 /* Fixtures */,
 			);
 			path = Tests;
@@ -82,16 +142,21 @@
 				F4E694791B6014B55819D551 /* Dither.ci.metal */,
 				DB527DFDDB46F4D7FC49B363 /* DitherPhilApp.swift */,
 				8738C5F64D5C0FB124D9C708 /* DitherRenderer.swift */,
+				891ED73763C097181B7CE7D7 /* DitherShortcuts.swift */,
 				0958DA7CA6A74822B83705CF /* Editor.swift */,
 				CF53F6A5BF6585721495CE36 /* Inspector.swift */,
 				EA0E45675B15133062934903 /* KpemSans.ttf */,
-				F4D96AF036CD8C8066676E91 /* Localizable.strings */,
 				7ED63F831BDB2B63632BC47F /* Media.swift */,
 				9BB23EE1355CDE5C116A0034 /* OFL-Iosevka.txt */,
+				28D63CF75669D9C4D707A91C /* PhotoLibrary.swift */,
 				281411921B68441F0C6B8E43 /* Settings.swift */,
+				B797488FE13F554E1DEAEB4B /* StudioPresets.swift */,
 				920B912A1AB0166C8D125121 /* StudioRange.swift */,
 				79811DC35278ABDF7A2495EA /* StudioStyle.swift */,
 				59F77F82DAD371C8BC20907D /* StudioView.swift */,
+				BC772AB52861FB5834F8D20B /* AppShortcuts.strings */,
+				3ACFFCD76F9BEA5E3D21D160 /* InfoPlist.strings */,
+				9F5A58E2DC87DA344EEAEB07 /* Localizable.strings */,
 			);
 			path = App;
 			sourceTree = "<group>";
@@ -100,6 +165,7 @@
 			isa = PBXGroup;
 			children = (
 				5A87B8237D9994043B15FF42 /* App */,
+				E4496E44008E0ACBE98634CE /* Share */,
 				4899664729DC8BAA07B5B232 /* Tests */,
 				BEC16925873238A43DA187C0 /* UITests */,
 				C9A5EE9C0E2BEF480076473C /* Products */,
@@ -126,15 +192,43 @@
 			isa = PBXGroup;
 			children = (
 				41A4396D0BF6F9D6A1FC318F /* DitherPhil.app */,
+				5D873A11E9F5A61BA5D0B6BE /* DitherPhilShare.appex */,
 				B8765F9A4EBB1756843037BC /* DitherPhilTests.xctest */,
 				9CEF221DC89BAF7E7C1D578C /* DitherPhilUITests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
 		};
+		E4496E44008E0ACBE98634CE /* Share */ = {
+			isa = PBXGroup;
+			children = (
+				FC8F427256218925A4A6E0AD /* ShareController.swift */,
+			);
+			path = Share;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		3C73EB67288370C48D421068 /* DitherPhilShare */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = E87696B44B5C15E1C5DF07B9 /* Build configuration list for PBXNativeTarget "DitherPhilShare" */;
+			buildPhases = (
+				18AEBE50AEACE7BDA51309D1 /* Sources */,
+				4B0FB8A3F5E0E6229CAF257A /* Resources */,
+				462E48C619278E2ED5A55731 /* Build Core Image Metal library */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = DitherPhilShare;
+			packageProductDependencies = (
+			);
+			productName = DitherPhilShare;
+			productReference = 5D873A11E9F5A61BA5D0B6BE /* DitherPhilShare.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
 		8D45562F380F9AFFA120BC5B /* DitherPhilTests */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 96C90D9B1FC8980DD75C4364 /* Build configuration list for PBXNativeTarget "DitherPhilTests" */;
@@ -178,11 +272,13 @@
 			buildPhases = (
 				8CD53B5520ADE299A1DF9A6A /* Sources */,
 				ABA0E3C0369F928231CFC1EF /* Resources */,
+				948789FA0200AB5EE3D6A352 /* Embed Foundation Extensions */,
 				BA10E813E29D1A8022FB77DD /* Build Core Image Metal library */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				C9571FEDD93E83CAC2058A21 /* PBXTargetDependency */,
 			);
 			name = DitherPhil;
 			packageProductDependencies = (
@@ -211,6 +307,7 @@
 			knownRegions = (
 				Base,
 				en,
+				ja,
 				ru,
 			);
 			mainGroup = 8B5295AF9728550FFE82B497;
@@ -221,6 +318,7 @@
 			projectRoot = "";
 			targets = (
 				FBF6F70B2ACD2642477325D4 /* DitherPhil */,
+				3C73EB67288370C48D421068 /* DitherPhilShare */,
 				8D45562F380F9AFFA120BC5B /* DitherPhilTests */,
 				D0A63A33A857A896C7F96365 /* DitherPhilUITests */,
 			);
@@ -228,6 +326,19 @@
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		4B0FB8A3F5E0E6229CAF257A /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				62E4982B7ED31EB72567710B /* AppShortcuts.strings in Resources */,
+				D0EEAC0BE8D50AEF8A29C48E /* Assets.xcassets in Resources */,
+				64EFF691677BB94260DA5C99 /* InfoPlist.strings in Resources */,
+				A2603F28EF192491EE26F3A1 /* KpemSans.ttf in Resources */,
+				B7E8B92D5677AADD67DC2250 /* Localizable.strings in Resources */,
+				13B181E30CC781D11386856F /* OFL-Iosevka.txt in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		9D1FB2CF2A292D039FF1A5CC /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -240,9 +351,11 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4D2A1A11DB19C60F80C4C687 /* AppShortcuts.strings in Resources */,
 				C6ACD4738E9100CA1F2508A8 /* Assets.xcassets in Resources */,
+				71F00340BDFCD21E4B97CDE0 /* InfoPlist.strings in Resources */,
 				5447CD5443905E6FBC16011F /* KpemSans.ttf in Resources */,
-				BC08EB296769F1D18DD23AF0 /* Localizable.strings in Resources */,
+				AD6CA8E641F8E6C65A264B99 /* Localizable.strings in Resources */,
 				D2E360D7B9248F7E19114A81 /* OFL-Iosevka.txt in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -250,6 +363,26 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
+		462E48C619278E2ED5A55731 /* Build Core Image Metal library */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"$(SRCROOT)/App/Dither.ci.metal",
+			);
+			name = "Build Core Image Metal library";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(TARGET_BUILD_DIR)/$(UNLOCALIZED_RESOURCES_FOLDER_PATH)/Dither.metallib",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "set -eu\ncd \"$SRCROOT\"\nmkdir -p \"$(dirname \"$SCRIPT_OUTPUT_FILE_0\")\"\nxcrun --sdk \"$PLATFORM_NAME\" metal -fcikernel -x metal -c - -o \"$TARGET_TEMP_DIR/Dither.air\" < App/Dither.ci.metal\nxcrun --sdk \"$PLATFORM_NAME\" metallib -cikernel \"$TARGET_TEMP_DIR/Dither.air\" -o \"$SCRIPT_OUTPUT_FILE_0\"\n";
+		};
 		BA10E813E29D1A8022FB77DD /* Build Core Image Metal library */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -273,11 +406,30 @@
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		18AEBE50AEACE7BDA51309D1 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				BC3DD284A5A10DCF13CE3D61 /* DitherRenderer.swift in Sources */,
+				5B07FB5179EF9639D3DAFF32 /* Editor.swift in Sources */,
+				679B0F244C5F3F2FE8E46FEB /* Inspector.swift in Sources */,
+				F3943D202B314CB0327892CB /* Media.swift in Sources */,
+				11EC74FC091D89133D065F4F /* PhotoLibrary.swift in Sources */,
+				6B1C9FA345688425EC4C467F /* Settings.swift in Sources */,
+				D5888E7C99D34C3490D7696B /* ShareController.swift in Sources */,
+				6F6D0F5D89BBB70B7607CAF0 /* StudioPresets.swift in Sources */,
+				7C4CE1A1B68706652E641A6E /* StudioRange.swift in Sources */,
+				1FCA641A4234DDC2EF263B47 /* StudioStyle.swift in Sources */,
+				C26BE79C8FC9D1230D35EA7A /* StudioView.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		2EFDA961EF6551C4D2D2B497 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 				EBBFAA2F3479CA759D325169 /* MediaPipelineTests.swift in Sources */,
+				C48AD7B22006424F1836773D /* StudioWorkflowTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -287,10 +439,13 @@
 			files = (
 				D5CC8B6077966E518EAD944D /* DitherPhilApp.swift in Sources */,
 				89F11C3B2E594EBD533178B3 /* DitherRenderer.swift in Sources */,
+				9B12BE408D1CC2EC3D0C92CF /* DitherShortcuts.swift in Sources */,
 				DCB9757412F3C22405AA8691 /* Editor.swift in Sources */,
 				802826A5CBCAF61436C04183 /* Inspector.swift in Sources */,
 				1BE1346DE04861440CB6F385 /* Media.swift in Sources */,
+				9927CAA8FC72EADBF11E3211 /* PhotoLibrary.swift in Sources */,
 				C71646B23394D22239211F82 /* Settings.swift in Sources */,
+				2B3C20B9E6EF1A6EA10777FE /* StudioPresets.swift in Sources */,
 				92F71B4028A183212BB6E609 /* StudioRange.swift in Sources */,
 				63894632FBF46491C13A5D0E /* StudioStyle.swift in Sources */,
 				EE1FDD5C4564AE88C9C6AB8F /* StudioView.swift in Sources */,
@@ -318,7 +473,45 @@
 			target = FBF6F70B2ACD2642477325D4 /* DitherPhil */;
 			targetProxy = 43E8EC455FBA53229DE43C6D /* PBXContainerItemProxy */;
 		};
+		C9571FEDD93E83CAC2058A21 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 3C73EB67288370C48D421068 /* DitherPhilShare */;
+			targetProxy = 854F3C63675615396914D6E9 /* PBXContainerItemProxy */;
+		};
 /* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+		3ACFFCD76F9BEA5E3D21D160 /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				BE275C27616B0E0D9EACF667 /* en */,
+				CB2FB8159466EC2B8EC7123D /* ja */,
+				3D26ACEC35B285E32B756785 /* ru */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+		9F5A58E2DC87DA344EEAEB07 /* Localizable.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				18D0FA96BA00C5190C02DE9F /* en */,
+				0B25698DC1F499D1EA7ADA67 /* ja */,
+				CB08393D703CEDAB7BB0C50A /* ru */,
+			);
+			name = Localizable.strings;
+			sourceTree = "<group>";
+		};
+		BC772AB52861FB5834F8D20B /* AppShortcuts.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				917D2FD4B0BA6EE7A9FF5CE7 /* en */,
+				C2F8C153E049F0200C4F22D5 /* ja */,
+				664B9F7A22426227CB6CB8FC /* ru */,
+			);
+			name = AppShortcuts.strings;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
 		0DA2259833CB94B7B2FD5AD9 /* Release */ = {
@@ -355,7 +548,7 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 6;
+				CURRENT_PROJECT_VERSION = 7;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
@@ -368,7 +561,7 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
-				MARKETING_VERSION = 1.0.3;
+				MARKETING_VERSION = 1.1.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -387,6 +580,7 @@
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_CFBundleDisplayName = DitherPhil;
+				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "Save your rendered photos and videos to Photos.";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
@@ -435,6 +629,23 @@
 			};
 			name = Debug;
 		};
+		648C9887416FFC86567CC1CE /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				APPLICATION_EXTENSION_API_ONLY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
+				INFOPLIST_FILE = Share/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = app.kpem.ditherphil.ios.share;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
 		665C3A34D20D636E931E6D46 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -469,7 +680,7 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 6;
+				CURRENT_PROJECT_VERSION = 7;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
@@ -488,7 +699,7 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
-				MARKETING_VERSION = 1.0.3;
+				MARKETING_VERSION = 1.1.0;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -534,6 +745,23 @@
 			};
 			name = Release;
 		};
+		B6A25E8F26355025C6AA4D4A /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				APPLICATION_EXTENSION_API_ONLY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
+				INFOPLIST_FILE = Share/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = app.kpem.ditherphil.ios.share;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
 		F8E8054EA73B3E31A85F2900 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -542,6 +770,7 @@
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_CFBundleDisplayName = DitherPhil;
+				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "Save your rendered photos and videos to Photos.";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
@@ -582,6 +811,15 @@
 			buildConfigurations = (
 				6165B446DE6392A3402E1D10 /* Debug */,
 				B0B9D7A5CD062D6151758347 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		E87696B44B5C15E1C5DF07B9 /* Build configuration list for PBXNativeTarget "DitherPhilShare" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				648C9887416FFC86567CC1CE /* Debug */,
+				B6A25E8F26355025C6AA4D4A /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Debug;

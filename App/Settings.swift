@@ -1,7 +1,7 @@
 import CoreGraphics
 import SwiftUI
 
-enum Algorithm: Int, CaseIterable, Identifiable, Sendable {
+enum Algorithm: Int, CaseIterable, Identifiable, Codable, Sendable {
     case threshold, bayer2, bayer4, bayer8, stipple, atkinson, floydSteinberg, sierraLite
 
     var id: Self { self }
@@ -22,7 +22,7 @@ enum Algorithm: Int, CaseIterable, Identifiable, Sendable {
     var diffusesError: Bool { rawValue >= Self.atkinson.rawValue }
 }
 
-enum Palette: Int, CaseIterable, Identifiable, Sendable {
+enum Palette: Int, CaseIterable, Identifiable, Codable, Sendable {
     case grayscale, rgb, paper, handheld, amber, custom
 
     var id: Self { self }
@@ -53,7 +53,7 @@ func rgbHex(_ hex: UInt32) -> SIMD3<Float> {
     SIMD3(Float((hex >> 16) & 255), Float((hex >> 8) & 255), Float(hex & 255)) / 255
 }
 
-struct EditSettings: Equatable, Sendable {
+struct EditSettings: Equatable, Codable, Sendable {
     var algorithm: Algorithm = .bayer4
     var palette: Palette = .paper
     var cell = 4.0
@@ -80,7 +80,7 @@ struct EditSettings: Equatable, Sendable {
     }
 }
 
-enum OutputResolution: Int, CaseIterable, Identifiable, Sendable {
+enum OutputResolution: Int, CaseIterable, Identifiable, Codable, Sendable {
     case original = 0
     case ultraHD = 3840
     case fullHD = 1920
@@ -110,7 +110,7 @@ enum OutputResolution: Int, CaseIterable, Identifiable, Sendable {
     }
 }
 
-enum ExportFormat: String, CaseIterable, Identifiable, Sendable {
+enum ExportFormat: String, CaseIterable, Identifiable, Codable, Sendable {
     case png, jpeg, heic, hevc, h264
 
     var id: Self { self }
